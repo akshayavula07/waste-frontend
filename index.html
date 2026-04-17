@@ -4,205 +4,678 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI-Powered Waste Classification System</title>
-    <!-- Use FontAwesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/landing.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-secondary: #475569;
+            --text-light: #64748b;
+            --border-color: #e2e8f0;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --green: #10b981;
+            --green-light: #d1fae5;
+            --green-dark: #059669;
+            --yellow: #f59e0b;
+            --gray: #64748b;
+            --purple: #8b5cf6;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --radius-lg: 1rem;
+            --radius-xl: 1.5rem;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Ambient Background */
+        .ambient-bg {
+            position: fixed;
+            top: -150px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 1200px;
+            height: 500px;
+            background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.15) 0%, rgba(248, 250, 252, 0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            padding: 4rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 1rem;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            color: var(--text-main);
+            margin-bottom: 1.25rem;
+            line-height: 1.1;
+        }
+
+        .header p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Main Layout Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            border-color: #cbd5e1;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed #94a3b8;
+            border-radius: var(--radius-lg);
+            padding: 4rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .upload-area:hover, .upload-area.dragover {
+            border-color: var(--primary);
+            background: #eff6ff;
+        }
+
+        .upload-icon {
+            background: white;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .upload-icon svg {
+            width: 36px;
+            height: 36px;
+            color: var(--primary);
+        }
+
+        .upload-area:hover .upload-icon {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+
+        .upload-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-desc {
+            color: var(--text-light);
+            font-size: 0.875rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            padding: 0.875rem 2rem;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.23);
+        }
+
+        /* Results Area */
+        .result-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #94a3b8;
+            flex: 1;
+            padding: 3rem 0;
+        }
+
+        .result-placeholder svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .result-placeholder p {
+            font-size: 1.125rem;
+            font-weight: 500;
+        }
+
+        #previewContainer {
+            display: none;
+            width: 100%;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .image-preview-wrapper {
+            position: relative;
+            width: 100%;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            background: #000;
+        }
+
+        #previewImage {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: contain;
+            max-height: 400px;
+        }
+
+        .results-box {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .result-item-card {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 1.25rem 1.5rem;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.2s;
+        }
+
+        .result-item-card:hover {
+            transform: scale(1.02);
+            border-color: var(--primary);
+        }
+
+        .result-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .result-class {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-transform: capitalize;
+        }
+
+        .result-conf-text {
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+
+        .accuracy-badge {
+            background: var(--green-light);
+            color: var(--green-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 1.25rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Categories Section */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+            width: 100%;
+        }
+
+        .cat-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: all 0.2s;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .cat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: #cbd5e1;
+        }
+
+        .cat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .cat-icon svg { width: 28px; height: 28px; color: white; }
+
+        .cat-card h4 { font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .cat-card p { font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1rem; }
+
+        /* Loader */
+        .loader-overlay {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.9);
+            border-radius: var(--radius-lg);
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border-color);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--text-main);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            transform: translateY(150%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .toast.show { transform: translateY(0); }
+        .toast svg { width: 20px; height: 20px; color: var(--green); }
+        .toast.error svg { color: #ef4444; }
+
+        /* Footer */
+        .footer {
+            margin-top: 4rem;
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-light);
+            font-size: 0.875rem;
+            width: 100%;
+        }
+
+        .footer span { font-weight: 600; color: var(--text-secondary); }
+    </style>
 </head>
 <body>
-    <div class="bg-glow"></div>
+    <div class="ambient-bg"></div>
     
-    <div class="landing-container">
-        
+    <div class="container">
         <!-- Header -->
-        <header class="landing-header">
-            <h1>AI-Powered Waste Classification System</h1>
-            <p>Revolutionizing waste management with YOLO11 computer vision technology. Upload an image to see real-time classification of plastic, paper, metal, glass, and biodegradable waste.</p>
+        <header class="header">
+            <h1>AI-Powered Waste Classification</h1>
+            <p>Revolutionizing waste management with sophisticated YOLO11 computer vision. Instantly identify and categorize plastic, paper, metal, glass, and organic waste with state-of-the-art precision.</p>
         </header>
 
-        <!-- Categories Section -->
-        <section class="landing-section">
-            <h2>Classification Categories</h2>
+        <!-- Main Workspace -->
+        <div class="main-grid">
             
-            <div class="category-card">
-                <div class="category-icon icon-plastic"><i class="fa-solid fa-bottle-water"></i></div>
-                <h3 class="category-title">Plastic</h3>
-                <p class="category-desc">Bottles, containers, packaging</p>
-                <div class="accuracy-bar" style="width: 100%;">94.2% accuracy</div>
-            </div>
-
-            <div class="category-card">
-                <div class="category-icon icon-paper"><i class="fa-solid fa-file-lines"></i></div>
-                <h3 class="category-title">Paper</h3>
-                <p class="category-desc">Newspapers, cardboard, documents</p>
-                <div class="accuracy-bar" style="width: 100%;">91.8% accuracy</div>
-            </div>
-
-            <div class="category-card">
-                <div class="category-icon icon-metal"><i class="fa-solid fa-wrench"></i></div>
-                <h3 class="category-title">Metal</h3>
-                <p class="category-desc">Cans, foil, metal objects</p>
-                <div class="accuracy-bar" style="width: 100%;">96.1% accuracy</div>
-            </div>
-
-            <div class="category-card">
-                <div class="category-icon icon-glass"><i class="fa-solid fa-wine-glass"></i></div>
-                <h3 class="category-title">Glass</h3>
-                <p class="category-desc">Bottles, jars, glass containers</p>
-                <div class="accuracy-bar" style="width: 100%;">93.7% accuracy</div>
-            </div>
-
-            <div class="category-card">
-                <div class="category-icon icon-bio"><i class="fa-solid fa-leaf"></i></div>
-                <h3 class="category-title">Biodegradable</h3>
-                <p class="category-desc">Food waste, organic materials</p>
-                <div class="accuracy-bar" style="width: 100%;">89.4% accuracy</div>
-            </div>
-        </section>
-
-        <!-- Upload Section -->
-        <section class="landing-section">
-            <h2>Upload Waste Image</h2>
-            <div class="upload-box" id="dropZone">
-                <div class="upload-box-icon">
-                    <i class="fa-solid fa-arrow-up-from-bracket"></i>
+            <!-- Upload Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Upload Image</div>
                 </div>
-                <h3>Drop your waste image here, or click to browse</h3>
-                <p>Supports JPG, PNG, WebP formats</p>
-                <input type="file" id="fileInput" accept="image/jpeg, image/png, image/jpg, image/webp" style="display:none;">
-                <button class="btn-upload"><i class="fa-solid fa-camera"></i> Choose Image</button>
+                
+                <div class="upload-area" id="dropZone">
+                    <div class="upload-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                    </div>
+                    <div class="upload-title">Drop your waste image here</div>
+                    <div class="upload-desc">Supports high-resolution JPG, PNG, and WebP images.</div>
+                    
+                    <input type="file" id="fileInput" accept="image/jpeg, image/png, image/jpg, image/webp" style="display:none;">
+                    <button class="btn" id="browseBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        Browse Files
+                    </button>
+                </div>
+
+                <!-- Loading Overlay -->
+                <div class="loader-overlay" id="loader">
+                    <div class="spinner"></div>
+                    <div style="font-weight: 600; color: var(--text-secondary); font-size: 1.125rem;">Analyzing visual data...</div>
+                    <div style="color: var(--text-light); font-size: 0.875rem; margin-top: 0.5rem;">Running YOLO11 inference engine</div>
+                </div>
             </div>
 
-            <!-- Loader (hidden by default) -->
-            <div id="loader" style="display: none; text-align: center; margin-top: 1rem;">
-                <i class="fa-solid fa-circle-notch fa-spin fa-2x" style="color: var(--green-600);"></i>
-                <p style="margin-top: 0.5rem; color: var(--gray-600);">Analyzing image...</p>
-            </div>
-        </section>
+            <!-- Verification Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Analysis Results</div>
+                </div>
 
-        <!-- Dynamic Results Section -->
-        <section class="landing-section">
-            <h2>Classification Result</h2>
+                <div id="resultPlaceholder" class="result-placeholder">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                    </svg>
+                    <p>Awaiting image upload for real-time classification.</p>
+                </div>
+
+                <div id="previewContainer">
+                    <div class="image-preview-wrapper">
+                        <img id="previewImage" src="" alt="Analyzed photo">
+                    </div>
+                    <div id="resultsList" class="results-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Intelligence Categories -->
+        <div style="margin-top: 2rem;">
+            <h2 style="font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 0.5rem;">Supported Waste Categories</h2>
+            <p style="text-align: center; color: var(--text-light); margin-bottom: 2rem;">Trained on over 50,000 highly curated dataset annotations</p>
             
-            <div id="resultPlaceholder" class="result-placeholder">
-                <i class="fa-solid fa-bullseye"></i>
-                <p>Upload an image to see classification results</p>
-            </div>
-
-            <div id="previewContainer">
-                <img id="previewImage" src="" alt="Analyzed photo">
-                <div id="resultsList"></div>
-            </div>
-        </section>
-
-        <!-- Performance Stats -->
-        <section class="landing-section">
-            <h2>System Performance</h2>
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-item-icon" style="background:#d1fae5; color:#059669;"><i class="fa-solid fa-bullseye"></i></div>
-                    <div class="stat-val">93.2%</div>
-                    <div class="stat-label">Overall Accuracy</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-item-icon" style="background:#dbeafe; color:#2563eb;"><i class="fa-solid fa-bolt"></i></div>
-                    <div class="stat-val">0.15s</div>
-                    <div class="stat-label">Processing Speed</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-item-icon" style="background:#f3e8ff; color:#7c3aed;"><i class="fa-solid fa-chart-column"></i></div>
-                    <div class="stat-val">12,847</div>
-                    <div class="stat-label">Images Processed</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-item-icon" style="background:#d1fae5; color:#059669;"><i class="fa-solid fa-arrow-trend-up"></i></div>
-                    <div class="stat-val">+87%</div>
-                    <div class="stat-label">Sorting Efficiency</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Technical Details -->
-        <section class="landing-section" style="margin-bottom: 0;">
-            <h2>Technical Implementation</h2>
-            <ul class="tech-list">
-                <li class="tech-item">
-                    <i class="fa-solid fa-microchip" style="color: var(--blue-500);"></i>
-                    <div>
-                        <h4>YOLO11 Architecture</h4>
-                        <p>State-of-the-art object detection framework optimized for real-time waste classification with enhanced accuracy and speed.</p>
+            <div class="categories-grid">
+                <div class="cat-card">
+                    <div class="cat-icon" style="background: var(--primary);">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
                     </div>
-                </li>
-                <li class="tech-item">
-                    <i class="fa-solid fa-database" style="color: var(--green-500);"></i>
-                    <div>
-                        <h4>Training Dataset</h4>
-                        <p>Trained on publicly available waste datasets combined with custom images, totaling over 50,000 annotated samples.</p>
-                    </div>
-                </li>
-                <li class="tech-item">
-                    <i class="fa-solid fa-bolt" style="color: var(--purple-500);"></i>
-                    <div>
-                        <h4>Real-time Processing</h4>
-                        <p>Optimized for deployment in automated collection systems with sub-second classification times.</p>
-                    </div>
-                </li>
-                <li class="tech-item">
-                    <i class="fa-solid fa-globe" style="color: var(--yellow-500);"></i>
-                    <div>
-                        <h4>Smart Recycling</h4>
-                        <p>Supports smart recycling initiatives by reducing sorting errors and enabling automated waste management.</p>
-                    </div>
-                </li>
-            </ul>
+                    <h4>Plastic</h4>
+                    <p>Bottles, containers</p>
+                </div>
 
-            <div class="benefits-box">
-                <h4>Key Benefits</h4>
-                <ul>
-                    <li>Reduces manual sorting time by up to 87%</li>
-                    <li>Minimizes human error in waste classification</li>
-                    <li>Enables 24/7 automated sorting operations</li>
-                    <li>Supports environmental sustainability goals</li>
-                    <li>Scalable for various facility sizes</li>
-                </ul>
+                <div class="cat-card">
+                    <div class="cat-icon" style="background: var(--yellow);">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    </div>
+                    <h4>Paper</h4>
+                    <p>Cardboard, docs</p>
+                </div>
+
+                <div class="cat-card">
+                    <div class="cat-icon" style="background: var(--gray);">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    </div>
+                    <h4>Metal</h4>
+                    <p>Cans, hardware</p>
+                </div>
+
+                <div class="cat-card">
+                    <div class="cat-icon" style="background: var(--purple);">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+                    </div>
+                    <h4>Glass</h4>
+                    <p>Bottles, jars</p>
+                </div>
+
+                <div class="cat-card">
+                    <div class="cat-icon" style="background: var(--green);">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" /></svg>
+                    </div>
+                    <h4>Biodegradable</h4>
+                    <p>Organic materials</p>
+                </div>
             </div>
-        </section>
+        </div>
 
         <!-- Footer -->
         <footer class="footer">
-            Built with YOLO11 • Supporting sustainable waste management and smart recycling initiatives
+            Powered by <span>YOLO11</span> Computer Vision API • Supporting intelligent waste management systems worldwide.
         </footer>
     </div>
-    
-    <div id="notification" style="display:none; position:fixed; bottom:20px; right:20px; background:#10b981; color:white; padding:15px; border-radius:8px; font-weight:600; box-shadow:0 4px 6px rgba(0,0,0,0.1); z-index:9999;"></div>
 
-    <script type="module" src="assets/js/api.js"></script>
-    <script type="module" src="assets/js/upload.js"></script>
+    <!-- Notification Toast -->
+    <div id="toast" class="toast">
+        <svg id="toastIconSuccess" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span id="toastMsg">Operation successful!</span>
+    </div>
 
-    <script>
-        // Adjust the upload.js visibility logic slightly for the new landing page structure
-        const previewContainer = document.getElementById("previewContainer");
-        const resultPlaceholder = document.getElementById("resultPlaceholder");
-        const loader = document.getElementById("loader");
-        const dropZone = document.getElementById("dropZone");
+    <!-- Integrate the API -->
+    <script type="module">
+        import { API_URL } from './assets/js/api.js';
 
-        // We override the default display logic since the UI is different
-        // We will listen for changes to the file processing directly
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.target.id === 'previewContainer') {
-                    if (mutation.target.style.display === 'block') {
-                        resultPlaceholder.style.display = 'none';
-                    }
+        document.addEventListener("DOMContentLoaded", () => {
+            const dropZone = document.getElementById("dropZone");
+            const fileInput = document.getElementById("fileInput");
+            const browseBtn = document.getElementById("browseBtn");
+            const previewContainer = document.getElementById("previewContainer");
+            const resultPlaceholder = document.getElementById("resultPlaceholder");
+            const previewImage = document.getElementById("previewImage");
+            const resultsList = document.getElementById("resultsList");
+            const loader = document.getElementById("loader");
+            const toast = document.getElementById("toast");
+            const toastMsg = document.getElementById("toastMsg");
+
+            function showToast(message, isError = false) {
+                toastMsg.textContent = message;
+                if (isError) {
+                    toast.classList.add("error");
+                    toast.querySelector("svg").outerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+                } else {
+                    toast.classList.remove("error");
+                    toast.querySelector("svg").outerHTML = `<svg id="toastIconSuccess" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
                 }
+                toast.classList.add("show");
+                setTimeout(() => toast.classList.remove("show"), 3500);
+            }
+
+            // Drag and Drop
+            dropZone.addEventListener("click", () => fileInput.click());
+            browseBtn.addEventListener("click", (e) => { e.stopPropagation(); fileInput.click(); });
+            
+            dropZone.addEventListener("dragover", (e) => {
+                e.preventDefault();
+                dropZone.classList.add("dragover");
             });
-        });
-        
-        observer.observe(previewContainer, { attributes: true, attributeFilter: ['style'] });
-        
-        // Ensure "Choose Image" button activates click
-        document.querySelector('.btn-upload').addEventListener('click', (e) => {
-            e.stopPropagation();
-            document.getElementById('fileInput').click();
+            dropZone.addEventListener("dragleave", () => dropZone.classList.remove("dragover"));
+            dropZone.addEventListener("drop", (e) => {
+                e.preventDefault();
+                dropZone.classList.remove("dragover");
+                if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+            });
+            
+            fileInput.addEventListener("change", function() {
+                if (this.files.length) handleFile(this.files[0]);
+            });
+
+            async function handleFile(file) {
+                if (!file.type.startsWith("image/")) {
+                    showToast("Please upload an image file.", true);
+                    return;
+                }
+
+                previewContainer.style.display = "none";
+                resultPlaceholder.style.display = "none";
+                loader.style.display = "flex";
+                resultsList.innerHTML = "";
+
+                const formData = new FormData();
+                formData.append("image", file);
+
+                try {
+                    const response = await fetch(`${API_URL}/upload`, {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    if (!response.ok) throw new Error("API Server error.");
+
+                    const data = await response.json();
+                    previewImage.src = `data:image/jpeg;base64,${data.image_base64}`;
+                    
+                    if (data.detections && data.detections.length > 0) {
+                        let html = '';
+                        // Determine majority color
+                        data.detections.forEach((det) => {
+                            const confPct = (det.confidence * 100).toFixed(1);
+                            html += `
+                                <div class="result-item-card">
+                                    <div class="result-info">
+                                        <div class="result-class">${det.class}</div>
+                                        <div class="result-conf-text">Categorized from: ${det.original_class}</div>
+                                    </div>
+                                    <div class="accuracy-badge">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        ${confPct}%
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        resultsList.innerHTML = html;
+                        showToast("Image classified successfully!");
+                    } else {
+                        resultsList.innerHTML = `
+                        <div class="result-item-card" style="justify-content:center; color: var(--text-light);">
+                            No waste objects detected in this image.
+                        </div>`;
+                        showToast("No waste detected.");
+                    }
+                    
+                    previewContainer.style.display = "block";
+                } catch (error) {
+                    console.error(error);
+                    showToast("Failed to connect to AI server.", true);
+                    resultPlaceholder.style.display = "flex";
+                } finally {
+                    loader.style.display = "none";
+                    fileInput.value = "";
+                }
+            }
         });
     </script>
 </body>

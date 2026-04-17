@@ -4,7 +4,7 @@
 
 export const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
     ? 'http://127.0.0.1:8000' 
-    : 'https://waste-management-d14f.onrender.com'; // Replace with actual Render/Railway URL
+    : 'https://waste-backend1.onrender.com'; // Replace with actual Render/Railway URL
 
 // Shared function to handle API calls
 export async function fetchFromAPI(endpoint, options = {}) {

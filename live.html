@@ -1,23 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Camera | EcoVision</title>
+    <title>Live Camera | Waste Classification</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <nav>
-        <a href="index.html" class="logo">
-            <i class="fa-solid fa-leaf"></i> EcoVision
+        <a href="dashboard.html" class="logo">
+            <i class="fa-solid fa-leaf"></i>Waste Classification
         </a>
         <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
             <li><a href="upload.html">Upload</a></li>
             <li><a href="live.html" class="active">Live Camera</a></li>
-            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="history.html">History</a></li>
+            <li><a href="login.html" class="btn btn-danger"
+                    style="color: white; padding: 0.5rem 1rem; margin-left: 1rem;"><i
+                        class="fa-solid fa-sign-out-alt"></i> Logout</a></li>
         </ul>
     </nav>
 
@@ -25,18 +31,19 @@
         <div class="card" style="max-width: 900px; margin: 0 auto; text-align: center;">
             <h2><i class="fa-solid fa-video"></i> Live Waste Detection</h2>
             <p style="margin-bottom: 2rem;">Real-time waste classification using your webcam</p>
-            
+
             <div class="video-container" id="videoContainer">
                 <video id="videoElement" autoplay playsinline></video>
                 <img id="processedImage" alt="Live Detection Stream">
                 <canvas id="canvasElement" style="display: none;"></canvas>
             </div>
-            
+
             <div class="controls">
                 <button class="btn" id="startBtn"><i class="fa-solid fa-play"></i> Start Camera</button>
-                <button class="btn btn-outline" id="stopBtn" style="display: none;"><i class="fa-solid fa-stop"></i> Stop Camera</button>
+                <button class="btn btn-outline" id="stopBtn" style="display: none;"><i class="fa-solid fa-stop"></i>
+                    Stop Camera</button>
             </div>
-            
+
             <div id="liveResults" style="margin-top: 1.5rem; text-align: left;">
                 <!-- Detections will appear here -->
             </div>
@@ -48,4 +55,5 @@
     <script type="module" src="assets/js/api.js"></script>
     <script type="module" src="assets/js/live.js"></script>
 </body>
+
 </html>

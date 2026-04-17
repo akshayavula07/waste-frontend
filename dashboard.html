@@ -1,57 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | EcoVision</title>
+    <title>Dashboard |Waste Classification</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js for Dashboard Charts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
     <nav>
-        <a href="index.html" class="logo">
-            <i class="fa-solid fa-leaf"></i> EcoVision
+        <a href="dashboard.html" class="logo">
+            <i class="fa-solid fa-leaf"></i> Waste Classification
         </a>
         <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
+            <li><a href="dashboard.html" class="active">Dashboard</a></li>
             <li><a href="upload.html">Upload</a></li>
             <li><a href="live.html">Live Camera</a></li>
-            <li><a href="dashboard.html" class="active">Dashboard</a></li>
+            <li><a href="history.html">History</a></li>
+            <li><a href="login.html" class="btn btn-danger"
+                    style="color: white; padding: 0.5rem 1rem; margin-left: 1rem;"><i
+                        class="fa-solid fa-sign-out-alt"></i> Logout</a></li>
         </ul>
     </nav>
 
     <main>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-            <h2><i class="fa-solid fa-chart-pie"></i> Analytics Dashboard</h2>
-            <button id="exportBtn" class="btn"><i class="fa-solid fa-file-excel"></i> Export to Excel</button>
+            <h2><i class="fa-solid fa-chart-pie" style="color: var(--primary);"></i> Analytics Overview</h2>
+        </div>
+
+        <div class="stats-grid">
+            <div class="card stat-card">
+                <div class="stat-icon bg-blue">
+                    <i class="fa-solid fa-camera"></i>
+                </div>
+                <div class="stat-info">
+                    <h4>Total Scans</h4>
+                    <p id="totalScans">0</p>
+                </div>
+            </div>
+            <div class="card stat-card">
+                <div class="stat-icon bg-green">
+                    <i class="fa-solid fa-recycle"></i>
+                </div>
+                <div class="stat-info">
+                    <h4>Items Detected</h4>
+                    <p id="totalItems">0</p>
+                </div>
+            </div>
+            <div class="card stat-card">
+                <div class="stat-icon bg-purple">
+                    <i class="fa-solid fa-shapes"></i>
+                </div>
+                <div class="stat-info">
+                    <h4>Categories</h4>
+                    <p id="totalCategories">0</p>
+                </div>
+            </div>
+            <div class="card stat-card">
+                <div class="stat-icon bg-orange">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <div class="stat-info">
+                    <h4>Latest Activity</h4>
+                    <p id="latestActivity" style="font-size: 1.1rem; margin-top: 0.5rem;">N/A</p>
+                </div>
+            </div>
         </div>
 
         <div class="dashboard-grid">
             <div class="card">
-                <h3 style="margin-bottom: 1rem; text-align: center;">Waste Categories Over Time</h3>
-                <canvas id="categoryChart"></canvas>
-            </div>
-            
-            <div class="card">
-                <h3 style="margin-bottom: 1rem;">Recent Detections</h3>
-                <div style="overflow-x: auto;">
-                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                        <thead>
-                            <tr style="border-bottom: 2px solid var(--border);">
-                                <th style="padding: 10px;">ID</th>
-                                <th style="padding: 10px;">Time</th>
-                                <th style="padding: 10px;">Classes</th>
-                                <th style="padding: 10px;">Items</th>
-                            </tr>
-                        </thead>
-                        <tbody id="historyTableBody">
-                            <!-- Table rows will be generated here -->
-                        </tbody>
-                    </table>
+                <h3 style="margin-bottom: 1.5rem; color: var(--text-main); font-weight: 600;">Waste Categories
+                    Distribution</h3>
+                <div style="position: relative; height: 350px; width: 100%; display: flex; justify-content: center;">
+                    <canvas id="categoryChart"></canvas>
                 </div>
+            </div>
+
+            <div class="card"
+                style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                <div
+                    style="width: 100px; height: 100px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 3rem; margin-bottom: 1rem;">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+                <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">Environmental Impact</h3>
+                <p style="margin-bottom: 1.5rem;">By classifying waste accurately, you are contributing to a greener and
+                    more sustainable future.</p>
+                <a href="upload.html" class="btn" style="width: 100%; justify-content: center;">Start Scanning</a>
             </div>
         </div>
     </main>
@@ -61,4 +100,5 @@
     <script type="module" src="assets/js/api.js"></script>
     <script type="module" src="assets/js/dashboard.js"></script>
 </body>
+
 </html>

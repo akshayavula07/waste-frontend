@@ -1,23 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Image | EcoVision</title>
+    <title>Upload Image | Waste Classification</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <nav>
-        <a href="index.html" class="logo">
-            <i class="fa-solid fa-leaf"></i> EcoVision
+        <a href="dashboard.html" class="logo">
+            <i class="fa-solid fa-leaf"></i> Waste Classification
         </a>
         <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
             <li><a href="upload.html" class="active">Upload</a></li>
             <li><a href="live.html">Live Camera</a></li>
-            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="history.html">History</a></li>
+            <li><a href="login.html" class="btn btn-danger"
+                    style="color: white; padding: 0.5rem 1rem; margin-left: 1rem;"><i
+                        class="fa-solid fa-sign-out-alt"></i> Logout</a></li>
         </ul>
     </nav>
 
@@ -25,7 +31,7 @@
         <div class="card" style="max-width: 800px; margin: 0 auto;">
             <h2 style="text-align: center;"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Waste Image</h2>
             <p style="text-align: center; margin-bottom: 2rem;">Upload an image to classify the waste automatically.</p>
-            
+
             <div class="upload-area" id="dropZone">
                 <i class="fa-solid fa-image upload-icon"></i>
                 <h3>Drag & Drop an image here</h3>
@@ -37,10 +43,10 @@
 
             <div id="previewContainer">
                 <h3 style="margin-bottom: 1rem;">Analysis Result</h4>
-                <div style="display: flex; flex-direction: column; align-items: center;">
-                    <img id="previewImage" src="" alt="Processed Preview">
-                    <div id="resultsList" style="width: 100%; max-width: 500px;"></div>
-                </div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <img id="previewImage" src="" alt="Processed Preview">
+                        <div id="resultsList" style="width: 100%; max-width: 500px;"></div>
+                    </div>
             </div>
         </div>
     </main>
@@ -51,4 +57,5 @@
     <script type="module" src="assets/js/api.js"></script>
     <script type="module" src="assets/js/upload.js"></script>
 </body>
+
 </html>

@@ -1,24 +1,23 @@
 import { API_URL } from './api.js';
 
 document.addEventListener("DOMContentLoaded", async () => {
-    const historyTableBody = document.getElementById("historyTableBody");
-    const exportBtn = document.getElementById("exportBtn");
     const notification = document.getElementById("notification");
+    
+    // Stats elements
+    const totalScansEl = document.getElementById("totalScans");
+    const totalItemsEl = document.getElementById("totalItems");
+    const totalCategoriesEl = document.getElementById("totalCategories");
+    const latestActivityEl = document.getElementById("latestActivity");
     
     let chartInstance = null;
     
     function showNotification(message, type = 'success') {
-        notification.textContent = message;
+        notification.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-circle-exclamation'}"></i> ${message}`;
         notification.className = `notification show ${type}`;
         setTimeout(() => {
             notification.classList.remove('show');
         }, 3000);
     }
-
-    // Export functionality
-    exportBtn.addEventListener("click", () => {
-        window.open(`${API_URL}/export/excel`, '_blank');
-    });
 
     async function loadDashboardData() {
         try {
@@ -28,41 +27,36 @@ document.addEventListener("DOMContentLoaded", async () => {
             const data = await response.json();
             const history = data.history || [];
             
-            updateTable(history);
+            updateStats(history);
             updateChart(history);
             
         } catch (error) {
             console.error("Dashboard error:", error);
-            showNotification("Failed to load dashboard data. Is the backend running?", "error");
+            showNotification("Failed to load dashboard data. Ensure backend is running.", "error");
         }
     }
 
-    function updateTable(history) {
-        if (history.length === 0) {
-            historyTableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px;">No detections yet.</td></tr>';
-            return;
+    function updateStats(history) {
+        totalScansEl.textContent = history.length;
+        
+        let totalItems = 0;
+        let uniqueCategories = new Set();
+        let latestTime = "N/A";
+        
+        if (history.length > 0) {
+            latestTime = history[0].timestamp.split(' ')[1] || history[0].timestamp; // Just show time
         }
 
-        let html = '';
-        // Show only last 10 for the table
-        const displayHistory = history.slice(0, 10);
-        
-        displayHistory.forEach(record => {
-            const classes = record.detections.map(d => d.class).join(', ') || 'None';
-            html += `
-                <tr style="border-bottom: 1px solid var(--border);">
-                    <td style="padding: 10px;">#${record.id}</td>
-                    <td style="padding: 10px;">${record.timestamp}</td>
-                    <td style="padding: 10px; text-transform: capitalize;">${classes}</td>
-                    <td style="padding: 10px;">
-                        <span style="background: var(--primary); padding: 3px 8px; border-radius: 12px; font-size: 0.8rem;">
-                            ${record.count}
-                        </span>
-                    </td>
-                </tr>
-            `;
+        history.forEach(record => {
+            totalItems += record.count;
+            record.detections.forEach(det => {
+                uniqueCategories.add(det.class);
+            });
         });
-        historyTableBody.innerHTML = html;
+        
+        totalItemsEl.textContent = totalItems;
+        totalCategoriesEl.textContent = uniqueCategories.size;
+        latestActivityEl.textContent = latestTime;
     }
 
     function updateChart(history) {
@@ -84,22 +78,22 @@ document.addEventListener("DOMContentLoaded", async () => {
             data.push(1); // dummy data for empty chart
         }
 
-        // Generate some colors
+        // Modern colors for chart
         const backgroundColors = [
-            'rgba(16, 185, 129, 0.7)', // Emerald
-            'rgba(59, 130, 246, 0.7)', // Blue
-            'rgba(245, 158, 11, 0.7)', // Amber
-            'rgba(239, 68, 68, 0.7)',  // Red
-            'rgba(139, 92, 246, 0.7)', // Purple
-            'rgba(14, 165, 233, 0.7)'  // Sky
+            '#3b82f6', // Blue
+            '#10b981', // Emerald
+            '#8b5cf6', // Purple
+            '#f59e0b', // Amber
+            '#ef4444', // Red
+            '#06b6d4'  // Cyan
         ];
 
         if (chartInstance) {
             chartInstance.destroy();
         }
 
-        Chart.defaults.color = '#94a3b8';
-        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.color = '#64748b';
+        Chart.defaults.font.family = "'Poppins', sans-serif";
 
         chartInstance = new Chart(ctx, {
             type: 'doughnut',
@@ -108,22 +102,29 @@ document.addEventListener("DOMContentLoaded", async () => {
                 datasets: [{
                     data: data,
                     backgroundColor: backgroundColors.slice(0, labels.length),
-                    borderColor: '#1e293b',
-                    borderWidth: 2
+                    borderWidth: 0,
+                    hoverOffset: 4
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        position: 'bottom',
+                        position: 'right',
                         labels: {
-                            color: '#f8fafc',
-                            padding: 20
+                            color: '#1e293b',
+                            padding: 20,
+                            font: {
+                                size: 13,
+                                family: "'Poppins', sans-serif"
+                            },
+                            usePointStyle: true,
+                            pointStyle: 'circle'
                         }
                     }
                 },
-                cutout: '70%'
+                cutout: '75%'
             }
         });
     }
@@ -131,6 +132,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Initial load
     loadDashboardData();
     
-    // Refresh data every 10 seconds if user stays on page
+    // Refresh data every 10 seconds
     setInterval(loadDashboardData, 10000);
 });

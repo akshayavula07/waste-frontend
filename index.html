@@ -713,7 +713,7 @@
                     if (!response.ok) throw new Error("API Server error.");
 
                     const data = await response.json();
-                    previewImage.src = `data:image/jpeg;base64,${data.image_base64}`;
+                    previewImage.src = `${API_URL}/${data.image_url}`;
                     
                     if (data.detections && data.detections.length > 0) {
                         let html = '';
